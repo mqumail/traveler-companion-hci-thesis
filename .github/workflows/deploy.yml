@@ -1,24 +1,32 @@
-name: Deploy Static Site
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: ["main"]
   workflow_dispatch:
 
+permissions:
+  contents: write  # Critical change
+  pages: write
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Upload Files
-        run: |
-          echo "No build step needed - uploading raw files"
-          echo "This avoids all third-party actions"
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages  # GitHub Pages auto-deploys from this branch
-          folder: .
+        id: deployment
+        uses: actions/deploy-pages@v2
