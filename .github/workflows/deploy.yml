@@ -1,0 +1,26 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:  # Allows manual triggering
+
+permissions:
+  pages: write
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Upload site files
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: "./"  # Uploads everything
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
